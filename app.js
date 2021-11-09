@@ -19,10 +19,17 @@ function main() {
 
   const transformStreams = getTransformStreams(map);
 
+  // pipeline(
+  //   fs.createReadStream("./input.txt"), // создать класс, которые в случае чего возвращает null  заменяется на process.stdin
+  //   ...transformStreams,
+  //   fs.createWriteStream("./output.txt"), // создать класс, которые в случае чего возвращает null  заменяется на process.stdout
+  //   () => {}
+  // );
+
   pipeline(
-    fs.createReadStream("./input.txt"), // создать класс, которые в случае чего возвращает null  заменяется на process.stdin
+    getReadStream(map),
     ...transformStreams,
-    fs.createWriteStream("./output.txt"), // создать класс, которые в случае чего возвращает null  заменяется на process.stdout
+    getWriteStream(map),
     () => {}
   );
 }
@@ -52,4 +59,10 @@ function getTransformStreams(config) {
     });
 }
 
+function getReadStream(map) {
+  return map.has("-i") ? fs.createReadStream(map.get("-i")) : process.stdin;
+}
+function getWriteStream(map) {
+  return map.has("-o") ? fs.createWriteStream(map.get("-o")) : process.stdout;
+}
 main();
