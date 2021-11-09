@@ -1,23 +1,55 @@
+import {
+  argumentsValidation,
+  inputOutputFilesValidation,
+  configValidation,
+} from "./validation.js";
+import { configParsing } from "./parse.js";
 
-//node app -c "C1-C0-A-R1-R0-A-R0-R0-C1-A" -i "./input.txt" -o "./output.txt"
+import fs from "fs";
 
+import { pipeline } from "stream";
+import { CaesarTransform, AtbashTransform } from "./transofrmStreams.js";
 
-const isConfigValid = (data) =>{
-const [,config,,,,,,] = data;
-    console.log(config);
-for(let i = 0;i<config.length;++i){
-    if(config[i] == "C" || config[i] == "R"){
-        if(config[i+1] != 0 || config[i+1] != 1){
-            process.stderr.write("Lose 1 or 0");
-        }
-    }
-     if(config[i] == "A"){
-        if(config[i+1] != "-" || config[i+1] !=""){
-            process.stderr.write("A doesn't require key")
-        }
-    }
+function main() {
+  const input = process.argv.slice(2);
+  const map = configParsing(input);
+  argumentsValidation(map); // структура запроса
+  inputOutputFilesValidation(map); // существование файлов вводы вывода, если указаны ключи
+  configValidation(map); // проверка допустимости конфига
+
+  const transformStreams = getTransformStreams(map);
+
+  pipeline(
+    fs.createReadStream("./input.txt"), // создать класс, которые в случае чего возвращает null  заменяется на process.stdin
+    ...transformStreams,
+    fs.createWriteStream("./output.txt"), // создать класс, которые в случае чего возвращает null  заменяется на process.stdout
+    () => {}
+  );
 }
+
+function getTransformStreams(config) {
+  return config
+    .get("-c")
+    .split("-")
+    .map((item) => {
+      switch (item) {
+        case "C0":
+          return new CaesarTransform(-1);
+          break;
+        case "C1":
+          return new CaesarTransform(1);
+          break;
+        case "R0":
+          return new CaesarTransform(-8);
+          break;
+        case "R1":
+          return new CaesarTransform(8);
+          break;
+        case "A":
+          return new AtbashTransform();
+          break;
+      }
+    });
 }
 
-
-isConfigValid(process.argv.slice(2));
+main();
