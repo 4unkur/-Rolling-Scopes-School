@@ -63,6 +63,8 @@ function getReadStream(map) {
   return map.has("-i") ? fs.createReadStream(map.get("-i")) : process.stdin;
 }
 function getWriteStream(map) {
-  return map.has("-o") ? fs.createWriteStream(map.get("-o")) : process.stdout;
+  return map.has("-o")
+    ? fs.createWriteStream(map.get("-o"), { flags: "a" })
+    : process.stdout;
 }
 main();
