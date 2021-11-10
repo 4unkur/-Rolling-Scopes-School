@@ -9,10 +9,7 @@ export function Roat(str, shift) {
         item = item.toLowerCase();
         const asciiCode = item.charCodeAt(0);
 
-        if (
-          (asciiCode >= 65 && asciiCode <= 90) ||
-          (asciiCode >= 97 && asciiCode <= 122)
-        ) {
+        if (item.match(/[a-z]/)) {
           if (shift >= 0) {
             if (asciiCode + shift > 122)
               return flag
@@ -41,10 +38,7 @@ export function Atbash(str) {
         item = item.toLowerCase();
 
         const asciiCode = item.charCodeAt(0);
-        if (
-          (asciiCode >= 65 && asciiCode <= 90) ||
-          (asciiCode >= 97 && asciiCode <= 122)
-        ) {
+        if (item.match(/[a-z]/)) {
           const shift = asciiCode - 97;
 
           return flag ? 122 - shift : 90 - shift;
