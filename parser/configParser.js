@@ -1,4 +1,17 @@
+import { duplicateArgumentsError } from "../Exceptions/Exceptions.js";
+
 export function configParsing(args) {
+  //проверка на дублирование аргументов
+  try {
+    args.forEach((item) => {
+      if (args.indexOf(item) != args.lastIndexOf(item))
+        throw new duplicateArgumentsError(`Argument ${item} is duplicated`);
+    });
+  } catch (ex) {
+    process.stderr.write(`[${ex.time}] ${ex.message}`);
+    process.exit(1);
+  }
+
   const map = new Map();
   args.forEach((item, index) => {
     switch (item) {
@@ -16,11 +29,6 @@ export function configParsing(args) {
         break;
     }
   });
-
-  if (map.size * 2 != args.length) {
-    process.stderr.write("Incorrect input");
-    process.exit(123);
-  }
 
   return map;
 }
