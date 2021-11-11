@@ -1,4 +1,4 @@
-function configParsing(args) {
+export function configParsing(args) {
   const map = new Map();
   args.forEach((item, index) => {
     switch (item) {
@@ -24,5 +24,3 @@ function configParsing(args) {
 
   return map;
 }
-
-export { configParsing };
