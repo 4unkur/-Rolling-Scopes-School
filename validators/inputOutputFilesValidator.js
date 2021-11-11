@@ -1,19 +1,21 @@
-import fs from "fs";
+import { access } from "fs/promises";
 
-export function inputOutputFilesValidation(map) {
+export async function inputOutputFilesValidation(map) {
   if (map.has("-i")) {
-    if (!fs.existsSync(map.get("-i"))) {
-      // сделать асинхронно
+    try {
+      await access(map.get("-i"));
+    } catch (ex) {
       process.stderr.write("Input file is not exist");
-      process.exit(123);
+      process.exit(1);
     }
   }
 
   if (map.has("-o")) {
-    if (!fs.existsSync(map.get("-o"))) {
-      // сделать асинхронно
+    try {
+      await access(map.get("-o"));
+    } catch (ex) {
       process.stderr.write("Output file is not exist");
-      process.exit(123);
+      process.exit(1);
     }
   }
 }
