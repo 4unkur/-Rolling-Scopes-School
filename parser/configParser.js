@@ -1,4 +1,7 @@
-import { duplicateArgumentsError } from "../Exceptions/Exceptions.js";
+import {
+  duplicateArgumentsError,
+  incorrectInput,
+} from "../Exceptions/Exceptions.js";
 
 export function configParsing(args) {
   //проверка на дублирование аргументов
@@ -30,5 +33,13 @@ export function configParsing(args) {
     }
   });
 
+  try {
+    if (map.size * 2 != args.length) {
+      throw new incorrectInput(`Incorrect input`);
+    }
+  } catch (ex) {
+    process.stderr.write(`[${ex.time}] ${ex.message}`);
+    process.exit(1);
+  }
   return map;
 }

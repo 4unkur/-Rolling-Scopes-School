@@ -1,21 +1,18 @@
-import { access } from "fs/promises";
-
-export async function inputOutputFilesValidation(map) {
-  if (map.has("-i")) {
-    try {
-      await access(map.get("-i"));
-    } catch (ex) {
-      process.stderr.write("Input file is not exist");
-      process.exit(1);
+import { inputOutputFilesError } from "../Exceptions/Exceptions.js";
+import fs from "fs";
+export function inputOutputFilesValidation(map) {
+  try {
+    if (map.has("-i")) {
+      if (!fs.existsSync(map.get("-i")))
+        throw new inputOutputFilesError("Input file not found");
     }
-  }
 
-  if (map.has("-o")) {
-    try {
-      await access(map.get("-o"));
-    } catch (ex) {
-      process.stderr.write("Output file is not exist");
-      process.exit(1);
+    if (map.has("-o")) {
+      if (!fs.existsSync(map.get("-o")))
+        throw new inputOutputFilesError("Output file not found");
     }
+  } catch (ex) {
+    process.stderr.write(`[${ex.time}] ${ex.message}`);
+    process.exit(1);
   }
 }

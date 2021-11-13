@@ -8,3 +8,4 @@ export class configError extends Error {
 export class argumentsError extends configError {}
 export class inputOutputFilesError extends configError {}
 export class duplicateArgumentsError extends configError {}
+export class incorrectInput extends configError {}
